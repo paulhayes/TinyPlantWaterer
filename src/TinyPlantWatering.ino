@@ -20,6 +20,9 @@ const byte sensorPwr = PB4;
 const byte waterSensor = 3;
 const byte button = PB1;
 
+const char waterMsg[] = "Press Button to Water";
+const char thresholdMsg[] = "Press Button to \n set Threshold value";
+
 int sensorValue = 0;
 int thresholdValue = 0;
 volatile char buttonWake = 0;
@@ -90,7 +93,7 @@ void checkMoisture(){
 bool delayOrButton(int duration){
   unsigned int elapsed = 0;
   while( elapsed < duration ){
-    if( digitalRead(button) == HIGH ){
+    if( isButtonDown() ){
       return true;
     }
     _delay_ms(50);
@@ -191,6 +194,15 @@ void printInfo(){
   len = sprintf (num, "Threshold %03i", thresholdValue);
   oled.printString(num, len);
 
+}
+
+void printMessage(const char msg[]){
+  oled.cursorTo(0,2);
+  oled.printString((char*)msg);
+}
+
+bool isButtonDown(){
+  return digitalRead(button) == HIGH;
 }
 
 
