@@ -20,8 +20,8 @@ const byte sensorPwr = PB4;
 const byte waterSensor = 3;
 const byte button = PB1;
 
-const char waterMsg[] = "Press Button to Water";
-const char thresholdMsg[] = "Press Button to \n set Threshold value";
+const char waterMsg[] = "Press to water";
+const char thresholdMsg[] = "Press to \n set threshold value";
 
 int sensorValue = 0;
 int thresholdValue = 0;
@@ -105,22 +105,22 @@ bool delayOrButton(int duration){
 void processButtonPress(){
   printInfo();
   unsigned int elapsed = 0;
-  while( digitalRead(button) == HIGH ){
-    _delay_ms(50);
-    elapsed += 50;
-  }
 
-  if ( elapsed < 900 ){
+  while( delayOrButton(500) );
 
-  }
-  else if( elapsed < 3000 ){
+  printMessage(thresholdMsg);
+  if( delayOrButton(2000) ){
     thresholdValue = sensorValue;
     EEPROM.put(0,thresholdValue);
     printInfo();
   }
-  else {
-    //if over 3000 millis do nothing
+  printMessage("");
+  while( delayOrButton(500) );
+  printMessage(waterMsg);
+  while( delayOrButton(2000) ){
+    pump();
   }
+
 }
 
 void sensorOn(bool on){
